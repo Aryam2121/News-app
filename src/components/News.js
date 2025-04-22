@@ -7,6 +7,7 @@ import Spinner from './spinner';
 
 const News = (props) => {
     const { setProgress, apiKey, country, category, pageSize } = props;
+    const apiKey = process.env.REACT_APP_GNEWS_API_KEY;
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
