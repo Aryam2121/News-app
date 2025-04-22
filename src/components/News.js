@@ -16,29 +16,29 @@ const News = (props) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
-    const updateNews = async () => {
-        setProgress(10);
-        const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=${pageSize}`;
-        
-        setLoading(true);
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            setProgress(70);
-            
-            if (response.ok) {
-                setArticles(data.articles);
-                setTotalResults(data.totalResults);
-                setLoading(false);
-            } else {
-                console.error('Error fetching news data:', data);
-            }
-        } catch (error) {
-            console.error('Fetch error:', error);
+   const updateNews = async () => {
+    setProgress(10);
+    const url = `https://gnews.io/api/v4/top-headlines?token=${apiKey}&lang=en&country=${country}&topic=${category}&page=${page}&max=${pageSize}`;
+    
+    setLoading(true);
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setProgress(70);
+
+        if (response.ok) {
+            setArticles(data.articles);
+            setTotalResults(data.totalArticles); // GNews me 'totalArticles' aata hai
+            setLoading(false);
+        } else {
+            console.error('Error fetching news data:', data);
         }
-        
-        setProgress(100);
-    };
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+
+    setProgress(100);
+};
 
     useEffect(() => {
         document.title = `${capitalizeFirstLetter(category)} - NewsDose`;
@@ -46,24 +46,24 @@ const News = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [category]);
 
-    const fetchMoreData = async () => {
-        const url = `https://newsapi.org/v2/top-headlines?country=${country}&category=${category}&apiKey=${apiKey}&page=${page + 1}&pageSize=${pageSize}`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            if (response.ok) {
-                setArticles(articles.concat(data.articles));
-                setTotalResults(data.totalResults);
-                setPage((prevPage) => prevPage + 1);
-            } else {
-                console.error('Error fetching more news data:', data);
-            }
-        } catch (error) {
-            console.error('Fetch error:', error);
+   const fetchMoreData = async () => {
+    const url = `https://gnews.io/api/v4/top-headlines?token=${apiKey}&lang=en&country=${country}&topic=${category}&page=${page + 1}&max=${pageSize}`;
+    
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (response.ok) {
+            setArticles(articles.concat(data.articles));
+            setTotalResults(data.totalArticles);
+            setPage((prevPage) => prevPage + 1);
+        } else {
+            console.error('Error fetching more news data:', data);
         }
-    };
+    } catch (error) {
+        console.error('Fetch error:', error);
+    }
+};
 
     return (
         <>
